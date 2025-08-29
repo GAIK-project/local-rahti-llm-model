@@ -102,19 +102,23 @@ docker push image-registry.apps.2.rahti.csc.fi/gaik/gemma-fast-api:latest
 
 ### 3. API Usage Examples
 
-Once deployed, your API will be available at: `https://gemma-fast-api-route-gaik.apps.2.rahti.csc.fi`
+Once deployed, your API will be available at: `https://gemma-llm-gaik.2.rahtiapp.fi`
 
 #### Health Check
 
 ```bash
-curl https://gemma-fast-api-route-gaik.apps.2.rahti.csc.fi/healthz
+curl https://gemma-llm-gaik.2.rahtiapp.fi/healthz
 # Response: {"status":"ok","ready":true}
 ```
+
+#### FastAPI Documentation
+
+Open in browser: `https://gemma-llm-gaik.2.rahtiapp.fi/docs`
 
 #### Text Generation
 
 ```bash
-curl -X POST https://gemma-fast-api-route-gaik.apps.2.rahti.csc.fi/v1/generate \
+curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
   -H "Authorization: Bearer your-api-key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -125,14 +129,53 @@ curl -X POST https://gemma-fast-api-route-gaik.apps.2.rahti.csc.fi/v1/generate \
   }'
 ```
 
+#### Postman Testing
+
+1. **Health Check Request:**
+   - Method: `GET`
+   - URL: `https://gemma-llm-gaik.2.rahtiapp.fi/healthz`
+   - Headers: None required
+   - Expected Response: `{"status":"ok","ready":true}`
+
+2. **Text Generation Request:**
+   - Method: `POST`
+   - URL: `https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate`
+   - Headers:
+     ```
+     Authorization: Bearer 0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0
+     Content-Type: application/json
+     ```
+   - Body (raw JSON):
+     ```json
+     {
+       "prompt": "Explain machine learning in simple terms",
+       "max_new_tokens": 100,
+       "temperature": 0.7,
+       "top_p": 0.9
+     }
+     ```
+   - Expected Response:
+     ```json
+     {
+       "output": "Machine learning is a subset of artificial intelligence..."
+     }
+     ```
+
+3. **Import to Postman:**
+   - Create new Collection: "Gemma API"
+   - Add Environment variables:
+     - `base_url`: `https://gemma-llm-gaik.2.rahtiapp.fi`
+     - `api_key`: `0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0`
+   - Use `{{base_url}}` and `{{api_key}}` in requests
+
 #### Python Example
 
 ```python
 import requests
 
-url = "https://gemma-fast-api-route-gaik.apps.2.rahti.csc.fi/v1/generate"
+url = "https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate"
 headers = {
-    "Authorization": "Bearer your-api-key",
+    "Authorization": "Bearer 0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0",
     "Content-Type": "application/json"
 }
 data = {
@@ -150,11 +193,11 @@ print(result["output"])
 
 ```javascript
 const response = await fetch(
-  "https://gemma-fast-api-route-gaik.apps.2.rahti.csc.fi/v1/generate",
+  "https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate",
   {
     method: "POST",
     headers: {
-      Authorization: "Bearer your-api-key",
+      Authorization: "Bearer 0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
