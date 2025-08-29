@@ -1,0 +1,15 @@
+[project]
+name = "gemma-fast-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "transformers",
+    "uvicorn[standard]",
+    "accelerate",
+    "huggingface_hub",
+    "safetensors",
+    "torch",
+]
