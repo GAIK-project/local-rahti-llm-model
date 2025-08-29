@@ -1,18 +1,18 @@
-# # Gemma 3 270M - FastAPI (CPU)
+# 🚀 Gemma 3 270M - FastAPI (CPU)
 
 Minimal FastAPI service wrapping `google/gemma-3-270m-it` model.
 
-- Bearer API key authentication
-- CPU-only inference (no GPU required)
-- Docker containerized
+- 🔐 Bearer API key authentication
+- 💻 CPU-only inference (no GPU required)
+- 🐳 Docker containerized
 
-## Requirements
+## 📋 Requirements
 
 - `API_KEY` (required for authentication)
 - `HUGGINGFACE_HUB_TOKEN` (required for model access - Gemma 3 requires authentication)
 - Optional: `MODEL_ID` (default: `google/gemma-3-270m-it`)
 
-## Local Development
+## 🛠️ Local Development
 
 1. **Install dependencies:**
 
@@ -34,7 +34,7 @@ Minimal FastAPI service wrapping `google/gemma-3-270m-it` model.
    python -m uvicorn app:app --host 0.0.0.0 --port 8080
    ```
 
-## Docker
+## 🐳 Docker
 
 ```bash
 # Build
@@ -44,13 +44,13 @@ docker build -t gemma-fast-api .
 docker run -e API_KEY=your-demo-key -e HUGGINGFACE_HUB_TOKEN=hf_... -p 8080:8080 gemma-fast-api
 ```
 
-## API Endpoints
+## 🌐 API Endpoints
 
 - `GET /healthz` - Health check
 - `POST /v1/generate` - Text generation
 - `GET /docs` - FastAPI documentation
 
-## Usage Examples
+## 📖 Usage Examples
 
 ### Health Check
 
