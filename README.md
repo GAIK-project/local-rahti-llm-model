@@ -142,7 +142,7 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
    - URL: `https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate`
    - Headers:
      ```
-     Authorization: Bearer 0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0
+     Authorization: Bearer your-api-key
      Content-Type: application/json
      ```
    - Body (raw JSON):
@@ -165,7 +165,7 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
    - Create new Collection: "Gemma API"
    - Add Environment variables:
      - `base_url`: `https://gemma-llm-gaik.2.rahtiapp.fi`
-     - `api_key`: `0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0`
+     - `api_key`: `your-api-key`
    - Use `{{base_url}}` and `{{api_key}}` in requests
 
 #### Python Example
@@ -175,7 +175,7 @@ import requests
 
 url = "https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate"
 headers = {
-    "Authorization": "Bearer 0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0",
+    "Authorization": "Bearer your-api-key",
     "Content-Type": "application/json"
 }
 data = {
@@ -197,7 +197,7 @@ const response = await fetch(
   {
     method: "POST",
     headers: {
-      Authorization: "Bearer 0aBWoVg08IzO3RYphLn9EBvn8LVGrCK7n8BF3SmodC0",
+      Authorization: "Bearer your-api-key",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
