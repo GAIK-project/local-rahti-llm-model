@@ -132,12 +132,14 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
 #### Postman Testing
 
 1. **Health Check Request:**
+
    - Method: `GET`
    - URL: `https://gemma-llm-gaik.2.rahtiapp.fi/healthz`
    - Headers: None required
    - Expected Response: `{"status":"ok","ready":true}`
 
 2. **Text Generation Request:**
+
    - Method: `POST`
    - URL: `https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate`
    - Headers:
