@@ -42,69 +42,29 @@ curl -s -X POST http://localhost:8080/v1/generate \
   -d '{"prompt":"What is the capital of Finland?","max_new_tokens":32}'
 ```
 
-## CSC Rahti 2 Deployment Instructions
-
-### 1. Push Docker Image to Rahti Registry
+## CSC Rahti 2 Deployment
 
 ```bash
-# Tag the image for Rahti registry
+# Build and push to Rahti registry
+docker build -t gemma-fast-api .
 docker tag gemma-fast-api image-registry.apps.2.rahti.csc.fi/gaik/gemma-fast-api:latest
 
-# Login to Rahti and Docker registry
 oc login --server=https://api.2.rahti.csc.fi:6443
 oc whoami -t | docker login image-registry.apps.2.rahti.csc.fi -u $(oc whoami) --password-stdin
-
-# Push the image
 docker push image-registry.apps.2.rahti.csc.fi/gaik/gemma-fast-api:latest
 ```
 
-### 2. Deploy via Rahti Web Console
+Deploy via Rahti Web Console with:
 
-1. **Create Secret for API Key:**
+- **Image**: `image-registry.apps.2.rahti.csc.fi/gaik/gemma-fast-api:latest`
+- **Resources**: CPU 2000m, Memory 4Gi
+- **Environment**: `API_KEY` (from secret), `HF_HUB_OFFLINE=1`
 
-   - Go to Workloads → Secrets → Create Secret
-   - Name: `gemma-api-secret`
-   - Type: `Opaque`
-   - Key: `api-key`
-   - Value: `your-generated-api-key`
-
-2. **Create Deployment:**
-
-   - Go to Workloads → Deployments → Create Deployment
-   - Name: `gemma-fast-api`
-   - Image: `image-registry.apps.2.rahti.csc.fi/gaik/gemma-fast-api:latest`
-   - Port: `8080`
-   - Environment Variables:
-     - `API_KEY` → From Secret → `gemma-api-secret` → `api-key`
-     - `MODEL_ID` → Value → `google/gemma-3-270m-it`
-     - `HF_HUB_OFFLINE` → Value → `1`
-     - `HF_HUB_DISABLE_TELEMETRY` → Value → `1`
-   - Resources:
-     - CPU Request: `500m`, Limit: `2000m`
-     - Memory Request: `2Gi`, Limit: `4Gi`
-   - Health Checks:
-     - Readiness Probe: HTTP GET `/healthz` port `8080`, delay `30s`, period `10s`
-     - Liveness Probe: HTTP GET `/healthz` port `8080`, delay `60s`, period `30s`
-
-3. **Create Service:**
-
-   - Go to Networking → Services → Create Service
-   - Name: `gemma-fast-api-service`
-   - Selector: `app=gemma-fast-api`
-   - Port: `8080` → Target Port: `8080`
-
-4. **Create Route:**
-   - Go to Networking → Routes → Create Route
-   - Name: `gemma-fast-api-route`
-   - Service: `gemma-fast-api-service`
-   - Target Port: `8080`
-   - Secure Route: ✓ (TLS Termination: Edge)
-
-### 3. API Usage Examples
+## API Usage Examples
 
 Once deployed, your API will be available at: `https://gemma-llm-gaik.2.rahtiapp.fi`
 
-#### Health Check
+### Health Check
 
 ```bash
 curl https://gemma-llm-gaik.2.rahtiapp.fi/healthz
@@ -115,7 +75,7 @@ curl https://gemma-llm-gaik.2.rahtiapp.fi/healthz
 
 Open in browser: `https://gemma-llm-gaik.2.rahtiapp.fi/docs`
 
-#### Text Generation
+### Text Generation
 
 ```bash
 curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
@@ -129,7 +89,7 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
   }'
 ```
 
-#### Postman Testing
+### Postman Testing
 
 1. **Health Check Request:**
 
@@ -143,11 +103,14 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
    - Method: `POST`
    - URL: `https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate`
    - Headers:
-     ```
+
+     ```text
      Authorization: Bearer your-api-key
      Content-Type: application/json
      ```
+
    - Body (raw JSON):
+
      ```json
      {
        "prompt": "Explain machine learning in simple terms",
@@ -156,7 +119,9 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
        "top_p": 0.9
      }
      ```
+
    - Expected Response:
+
      ```json
      {
        "output": "Machine learning is a subset of artificial intelligence..."
@@ -170,7 +135,7 @@ curl -X POST https://gemma-llm-gaik.2.rahtiapp.fi/v1/generate \
      - `api_key`: `your-api-key`
    - Use `{{base_url}}` and `{{api_key}}` in requests
 
-#### Python Example
+### Python Example
 
 ```python
 import requests
@@ -191,7 +156,7 @@ result = response.json()
 print(result["output"])
 ```
 
-#### JavaScript Example
+### JavaScript Example
 
 ```javascript
 const response = await fetch(
@@ -214,7 +179,7 @@ const result = await response.json();
 console.log(result.output);
 ```
 
-OpenShift / CSC Rahti 2 notes
+## Notes
 
 - Container listens on `8080` and runs as non-root (`USER 1001`).
 - Caches are in `/cache` and writable for arbitrary UID.
@@ -223,8 +188,5 @@ OpenShift / CSC Rahti 2 notes
   - `HUGGINGFACE_HUB_TOKEN` (optional)
   - `MODEL_ID` (optional)
 - Resource guidance (CPU-only): start with 2 CPU / 2-3 GiB RAM. The 270M model in FP32 needs ~1.1 GiB RAM for weights plus overhead.
-
-Notes
-
 - Model is loaded on startup; `/healthz` indicates readiness.
 - Uses CPU with `torch.float32`. No GPU dependencies are required.
